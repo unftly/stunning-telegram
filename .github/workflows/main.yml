@@ -7,17 +7,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Download project
-        run: |
-          cd ~
-          wget -O project.zip "https://github.com/AshwinSoni-01/FrostKeys/archive/refs/tags/v2.5.7.zip"
-          unzip project.zip
-          cd project
-          unzip Frostkeys-main.zip
-          mv Frostkeys-main frostkeys
-          cd frostkeys
-          chmod +x gradlew
-          ./gradlew assembleDebug
+    - name: Download project
+  run: |
+    cd ~
+    wget -O project.zip "https://github.com/AshwinSoni-01/FrostKeys/archive/refs/tags/v2.5.7.zip"
+    unzip project.zip
+    cd FrostKeys-2.5.7
+    if [ -f Frostkeys-main.zip ]; then
+      unzip Frostkeys-main.zip
+      mv Frostkeys-main frostkeys
+    else
+      echo "Warning: Frostkeys-main.zip not found, using current directory"
+      mv . frostkeys
+    fi
+    cd frostkeys
+    chmod +x gradlew
+    ./gradlew assembleDebug
       - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
