@@ -1,0 +1,25 @@
+name: Build APK
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download project
+        run: |
+          cd ~
+          wget -O project.zip "https://github.com/AshwinSoni-01/FrostKeys/archive/refs/tags/v2.5.7.zip"
+          unzip project.zip
+          cd project
+          unzip Frostkeys-main.zip
+          mv Frostkeys-main frostkeys
+          cd frostkeys
+          chmod +x gradlew
+          ./gradlew assembleDebug
+      - name: Upload APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug
+          path: ~/frostkeys/app/build/outputs/apk/debug/*.apk
