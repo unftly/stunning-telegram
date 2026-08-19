@@ -6,8 +6,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
 
     steps:
       - name: Setup JDK 11
@@ -19,6 +17,7 @@ jobs:
       - name: Install Android SDK commandline tools
         run: |
           set -eux
+          export ANDROID_SDK_ROOT="$RUNNER_TEMP/android-sdk"
           mkdir -p "$ANDROID_SDK_ROOT/cmdline-tools"
           cd "$HOME"
           wget -q https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip -O cmdline-tools.zip
@@ -33,6 +32,7 @@ jobs:
       - name: Download project
         run: |
           set -eux
+          export ANDROID_SDK_ROOT="$RUNNER_TEMP/android-sdk"
           cd "$HOME"
           wget -O project.zip "https://github.com/AshwinSoni-01/FrostKeys/archive/refs/tags/v2.5.7.zip"
           unzip -q project.zip
@@ -60,7 +60,7 @@ jobs:
       - name: Build APK
         run: |
           set -eux
-          export ANDROID_SDK_ROOT="${{ runner.temp }}/android-sdk"
+          export ANDROID_SDK_ROOT="$RUNNER_TEMP/android-sdk"
           export PATH="$ANDROID_SDK_ROOT/platform-tools:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$PATH"
           cd "$HOME/frostkeys"
           ./gradlew assembleDebug --no-daemon -Porg.gradle.jvmargs="-Xmx2048m"
